@@ -1,0 +1,36 @@
+.emp-form {
+  max-width: 90%;
+  margin: auto;
+  background-color: rgba(247, 239, 239, 0.925);
+  padding: 20px 10px;
+  border-radius: 16px;
+  .form1 {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    column-gap: 40px;
+    row-gap: 20px;
+    .form-item {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  .form-btn {
+    margin-top: 25px;
+   
+    .btn {
+      padding: 12px 80px;
+      border: none;
+      background: rgb(20, 20, 124);
+      color: white;
+      border-radius: 8px;
+       margin-right: 10px;
+    }
+  }
+  .form-label {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .form-input {
+    height: 32px;
+  }
+}
