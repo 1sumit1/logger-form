@@ -14,12 +14,14 @@ const Form = ({ data, filterData }) => {
     // eslint-disable-next-line
   }, [location, data])
 
+  // actionType unique data
   let actionTypeOptions = new Set(
     data.map((item) => {
       return item.actionType
     })
   )
 
+  // applicationType unique data
   let applicationTypeOptions = new Set(
     data.map((item) => {
       return item.applicationType

@@ -7,7 +7,9 @@ import Table from '../components/Table/Table'
 const Home = () => {
   const [data, setData] = useState([])
   const [dataCopy, setDataCopy] = useState([])
-  const [page, setPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  //get data from api endpoint
   useEffect(() => {
     axios
       .get(`https://run.mocky.io/v3/a2fbc23e-069e-4ba5-954c-cd910986f40f`)
@@ -18,26 +20,19 @@ const Home = () => {
       .catch((err) => console.log(err))
   }, [])
 
-  console.log('data', data)
-  const uniqueActionType = [...new Set(data.map((item) => item.actionType))]
-  const uniqueApplicationType = [
-    ...new Set(data.map((item) => item.applicationType)),
-  ]
-
-   const filterData = (newData) => {
-     setData(newData)
-     setPage(1)
-   }
+  const filterData = (newData) => {
+    setData(newData)
+    setCurrentPage(1)
+  }
   return (
     <div className='form-container'>
-      <Form
-        uniqueActionType={uniqueActionType}
-        uniqueApplicationType={uniqueApplicationType}
-        data={dataCopy}
-        setData={setDataCopy}
-        filterData={filterData}
+      <Form data={dataCopy} setData={setDataCopy} filterData={filterData} />
+      <Table
+        data={data}
+        setData={setData}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
       />
-      <Table data={data} setData={setData} page={page} setPage={setPage} />
     </div>
   )
 }

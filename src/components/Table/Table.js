@@ -1,44 +1,133 @@
 import React, { useState } from 'react'
-import Pagination from '@mui/material/Pagination'
+import Pagination from '../Pagination/Pagination'
 import './Table.scss'
 
-const Table = ({ data, setData, page, setPage }) => {
-  const [order, setOrder] = useState('ASC')
+const Table = ({ data, setData,currentPage,setCurrentPage}) => {
+ 
+  const [recordsPerPage] = useState(10)
+ 
+  const indexOfLastRecord = currentPage * recordsPerPage
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage
+  const currentRecords = data.slice(indexOfFirstRecord, indexOfLastRecord)
 
-  const sortingData = (col) => {
-    if (order === 'ASC') {
-      const sorted = [...data].sort((a, b) => (a[col] > b[col] ? 1 : -1))
-      setData(sorted)
-      setOrder('DSC')
+   const nPages = Math.ceil(data.length / recordsPerPage)
+
+   let [sortToggle, setSortToggle] = useState({
+     isLogId: true,
+     isApplicationType: true,
+     isApplicationId: true,
+     isActionType: true,
+     isDateAndTime: true,
+   })
+
+  // sort coloum data
+  const LogIdSorting = () => {
+    let isSort = sortToggle.isLogId
+    let newData = [...data]
+    let sorting = (a, b) => {
+      if (isSort) {
+        return a.logId - b.logId
+      } else {
+        return b.logId - a.logId
+      }
     }
-    if (order === 'DSC') {
-      const sorted = [...data].sort((a, b) => (a[col] < b[col] ? 1 : -1))
-      setData(sorted)
-      setOrder('ASC')
+    let sortedData = newData.sort(sorting)
+    setData(sortedData)
+    setSortToggle({
+      ...sortToggle,
+      isLogId: !sortToggle.isLogId,
+    })
+  }
+
+  const ApplicationIdSorting = () => {
+    let isSort = sortToggle.isApplicationId
+    let newData = [...data]
+    let sorting = (a, b) => {
+      if (isSort) {
+        return a.applicationId - b.applicationId
+      } else {
+        return b.applicationId - a.applicationId
+      }
     }
+    let sortedData = newData.sort(sorting)
+    setData(sortedData)
+    setSortToggle({
+      ...sortToggle,
+      isApplicationId: !sortToggle.isApplicationId,
+    })
+  }
+
+  const ApplicationTypeSorting = () => {
+    let isSort = sortToggle.isApplicationType
+    let newData = [...data]
+    let sorting = (a, b) => {
+      if (isSort) {
+        return a.applicationType?.localeCompare(b.applicationType)
+      } else {
+        return b.applicationType?.localeCompare(a.applicationType)
+      }
+    }
+    let sortedData = newData.sort(sorting)
+    setData(sortedData)
+    setSortToggle({
+      ...sortToggle,
+      isApplicationType: !sortToggle.isApplicationType,
+    })
+  }
+
+  const ActionTypeSorting = () => {
+    let isSort = sortToggle.isActionType
+    let newData = [...data]
+    let sorting = (a, b) => {
+      if (isSort) {
+        return a.actionType?.localeCompare(b.actionType)
+      } else {
+        return b.actionType?.localeCompare(a.actionType)
+      }
+    }
+    let sortedData = newData.sort(sorting)
+    setData(sortedData)
+    setSortToggle({
+      ...sortToggle,
+      isActionType: !sortToggle.isActionType,
+    })
+  }
+
+  const DateAndTimeSorting = () => {
+    let isSort = sortToggle.isDateAndTime
+    let newData = [...data]
+    let sorting = (a, b) => {
+      if (isSort) {
+        return a.creationTimestamp?.localeCompare(b.creationTimestamp)
+      } else {
+        return b.creationTimestamp?.localeCompare(a.creationTimestamp)
+      }
+    }
+    let sortedData = newData.sort(sorting)
+    setData(sortedData)
+    setSortToggle({
+      ...sortToggle,
+      isDateAndTime: !sortToggle.isDateAndTime,
+    })
   }
   return (
     <div className='emp-table'>
       <table>
         <thead>
           <tr>
-            <th onClick={() => sortingData('log_id')}>LogId</th>
-            <th onClick={() => sortingData('application_id')}>ApplicationId</th>
-            <th onClick={() => sortingData('application_type')}>
-              ApplicationType
-            </th>
-            <th onClick={() => sortingData('company_id')}>CompanyId</th>
-            <th onClick={() => sortingData('action_type')}>ActionType</th>
-            <th onClick={() => sortingData('date')}>Date:Time</th>
+            <th onClick={LogIdSorting}>LogId</th>
+            <th onClick={ApplicationIdSorting}>ApplicationId</th>
+            <th onClick={ApplicationTypeSorting}>ApplicationType</th>
+            <th onClick={ActionTypeSorting}>ActionType</th>
+            <th onClick={DateAndTimeSorting}>Date:Time</th>
           </tr>
         </thead>
-        {data.slice((page - 1) * 10, (page - 1) * 10 + 10).map((item) => (
+        {currentRecords.map((item, index) => (
           <tbody>
-            <tr>
+            <tr key={index}>
               <td>{item.logId}</td>
               <td>{item.applicationId}</td>
               <td>{item.applicationType}</td>
-              <td>{item.companyId}</td>
               <td>{item.actionType}</td>
               <td>{item.creationTimestamp}</td>
             </tr>
@@ -51,14 +140,9 @@ const Table = ({ data, setData, page, setPage }) => {
         </center>
       )}
       <Pagination
-        count={10}
-        onChange={(e, value) => setPage(value)}
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          marginTop: '10px',
-        }}
+        nPages={nPages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
       />
     </div>
   )
